@@ -1,33 +1,34 @@
 const Book = require('../models/Book');
+const fs = require('fs');
 
-// Création d'un livre avec les données reçues et sauvegarde dans la base de données
+// Création d'un livre 
 exports.createBook = (req, res, next) => {
-  // Parsing et nettoyage des données reçues
+  
   const bookObject = JSON.parse(req.body.book);
   delete bookObject._id;
   delete bookObject._userId;
-  // Calcul ou définition de la note moyenne
+  
   let averageRating = bookObject.averageRating ? bookObject.averageRating : 0;
-  // Création de l'objet livre avec les données et sauvegarde
+  
   const book = new Book({
       ...bookObject,
       userId: req.auth.userId,
       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
      
   });
-  // Enregistrement du livre dans la base de données
+  
   book.save()
       .then(() => res.status(201).json({ message: 'Livre enregistré !' }))
       .catch(error => res.status(400).json({ error, message: 'Erreur lors de la sauvegarde du livre' }));
 };
 
-// Mise à jour d'un livre existant
+
 exports.updateBook = (req, res, next) => {
   const bookObject = req.file ? {
       ...JSON.parse(req.body.book),
       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
   } : { ...req.body };
-  // Recherche du livre dans la base de données
+  
   Book.findOne({ _id: req.params.id })
       .then((book) => {
           if (!book) return res.status(404).json({ message: 'Livre non trouvé' });
@@ -41,7 +42,7 @@ exports.updateBook = (req, res, next) => {
       .catch(error => res.status(400).json({ error }));
 };
 
-// Suppression d'un livre et de son image associée
+// Suppression d'un livre 
 exports.deleteBook = (req, res) => {
   Book.findOne({ _id: req.params.id })
       .then((book) => {
@@ -56,7 +57,7 @@ exports.deleteBook = (req, res) => {
       .catch(error => res.status(400).json({ error }));
 };
 
-// Récupération d'un livre spécifique par son ID
+// Récupération d'un livre 
 exports.getBookById = (req, res, next) => {
   Book.findOne({ _id: req.params.id })
     .then(book => res.status(200).json(book))
