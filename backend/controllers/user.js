@@ -11,7 +11,12 @@ exports.signup = (req, res, next) => {
         
         return res.status(400).json({ message: 'Adresse e-mail invalide' });
     }
-
+    const password = req.body.password;
+    const passwordStrengthRegex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/);
+    
+    if (!passwordStrengthRegex.test(password)) {
+        return res.status(400).json({ message: 'Le mot de passe doit contenir au moins 8 caractères, dont des majuscules, des minuscules, des chiffres et des symboles.' });
+    }
     
     bcrypt.hash(req.body.password, 10) 
       .then(hash => {
