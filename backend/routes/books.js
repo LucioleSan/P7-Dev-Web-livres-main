@@ -7,7 +7,7 @@ const { upload, optimizeImage } = require('../middleware/multer-config');
 
 
 // Route pour créer un nouveau livre (Authentification requise)
-router.post('/', upload, optimizeImage, bookController.createBook);
+router.post('/', auth, upload, optimizeImage, bookController.createBook);
 
 // Route pour obtenir la liste de tous les livres
 router.get('/', bookController.getAllBooks);

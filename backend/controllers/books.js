@@ -8,7 +8,6 @@ exports.createBook = (req, res, next) => {
   delete bookObject._id;
   delete bookObject._userId;
   
-  let averageRating = bookObject.averageRating ? bookObject.averageRating : 0;
   
   const book = new Book({
       ...bookObject,
